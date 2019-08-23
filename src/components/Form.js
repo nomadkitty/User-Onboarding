@@ -18,17 +18,32 @@ function UserForm ({ errors, touched, values, status }) {
             <h1>Welcome New User</h1>
             {/* <Formik> */}
                 <Form className="form-box">
-                    <Field type="text" name="name" placeholder="Name" />
+                    <label>Name
+                        <Field type="text" name="name" placeholder="Name" />
+                    </label>
                     {touched.name && errors.name && (
                         <p className="error">{errors.name}</p>
                     )}
 
-                    <Field type="text" name="email" placeholder="abc@email.com" />
+                    <label>
+                        Role
+                         <Field component="select" name="role" className="select">
+                            <option value="frontendEngineer">Frontend Engineer</option>
+                            <option value="BackendEngineer">Backend Engineer</option>
+                            <option value="fullStackEngineer">Full Stack Engineer</option>
+                            <option value="uxDesigner">UX Designer</option>
+                            <option value="dataScientist">Data Scientist</option>
+                         </Field>
+                    </label>
+
+                    <label>Email
+                    <Field type="text" name="email" placeholder="abc@email.com" /></label>
                     {touched.email && errors.email && (
                         <p className="error">{errors.email}</p>
                     )}
 
-                    <Field type="password" name="password" placeholder="Password" />
+                    <label>Password
+                    <Field type="password" name="password" placeholder="Password" /></label>
                     {touched.password && errors.password && (
                         <p className="error">{errors.password}</p>
                     )}
@@ -49,6 +64,7 @@ function UserForm ({ errors, touched, values, status }) {
                 <ul key={user.id}>
                     <li>Name: {user.name}</li>
                     <li>Email: {user.email}</li>
+                    <li>Role: {user.role}</li>
                 </ul>
             ))}
 
@@ -57,9 +73,10 @@ function UserForm ({ errors, touched, values, status }) {
 };
 
 const FormikUserForm = withFormik({
-    mapPropsToValues({ name, email, password, tos  }) {
+    mapPropsToValues({ name, role, email, password, tos  }) {
         return {
             name: name || "",
+            role: role || "",
             email: email || "",
             password: password || "",
             tos: tos || false
@@ -70,7 +87,7 @@ const FormikUserForm = withFormik({
         name: Yup.string().required("Please fill out your name."),
         email: Yup.string().email().required("Please enter your email."),
         password: Yup.string().min(6).required("Please enter at least 6 letters"),
-        tos: Yup.boolean().required("Required")
+        tos: Yup.boolean().oneOf([true], 'Must Accept Terms and Conditions'),
     }),
 
     handleSubmit(values, { setStatus }) {
